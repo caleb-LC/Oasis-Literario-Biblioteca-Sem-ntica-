@@ -1,14 +1,18 @@
+import os
 from flask import Flask, render_template, request
 from SPARQLWrapper import SPARQLWrapper, XML
 from database import consultar_base_datos, obtener_todos_los_libros, inicializar_base_de_datos
+ 
 app = Flask(__name__)
-
+ 
+# Inicializar siempre al arrancar (funciona con gunicorn y con python directo)
+inicializar_base_de_datos()
+ 
 def buscar_en_biblioteca(termino, idioma, tipo_busqueda):
     sparql = SPARQLWrapper(f"http://{idioma}.dbpedia.org/sparql")
     recurso = termino.strip().replace(" ", "_")
     
     if tipo_busqueda == "obras":
-        # CONCEPTO: Buscamos relaciones (Nodos conectados por dbo:author)
         consulta = f"""
         PREFIX dbo: <http://dbpedia.org/ontology/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -19,7 +23,6 @@ def buscar_en_biblioteca(termino, idioma, tipo_busqueda):
         }} LIMIT 15
         """
         sparql.setQuery(consulta)
-        
         sparql.setReturnFormat(XML)
         
         try:
@@ -27,7 +30,6 @@ def buscar_en_biblioteca(termino, idioma, tipo_busqueda):
             resultados_xml = resultados_dom.getElementsByTagName("result")
             
             obras = []
-            # Recorrer el árbol XML manualmente para sacar los títulos de los libros
             for resultado in resultados_xml:
                 bindings = resultado.getElementsByTagName("binding")
                 for binding in bindings:
@@ -35,7 +37,7 @@ def buscar_en_biblioteca(termino, idioma, tipo_busqueda):
                         literales = binding.getElementsByTagName("literal")
                         if literales:
                             nombre = "".join(nodo.nodeValue for nodo in literales[0].childNodes if nodo.nodeValue)
-                            if nombre not in obras: 
+                            if nombre not in obras:
                                 obras.append(nombre)
             
             if obras:
@@ -44,9 +46,8 @@ def buscar_en_biblioteca(termino, idioma, tipo_busqueda):
                 return {"exito": False, "mensaje": f"No se encontraron obras registradas para el autor '{termino}' en este idioma."}
         except Exception as e:
             return {"exito": False, "mensaje": f"Error de conexión: {e}"}
-
+ 
     else:
-        # BÚSQUEDA CLÁSICA: Sinopsis o Biografías 
         consulta = f"""
         PREFIX dbo: <http://dbpedia.org/ontology/>
         SELECT ?descripcion
@@ -55,7 +56,6 @@ def buscar_en_biblioteca(termino, idioma, tipo_busqueda):
         }}
         """
         sparql.setQuery(consulta)
-        
         sparql.setReturnFormat(XML)
         
         try:
@@ -71,17 +71,14 @@ def buscar_en_biblioteca(termino, idioma, tipo_busqueda):
                 return {"exito": False, "mensaje": f"No se encontró información sobre '{termino}'. Revisa la ortografía y las mayúsculas."}
         except Exception as e:
             return {"exito": False, "mensaje": f"Error de conexión: {e}"}
-
+ 
 @app.route('/')
 def index():
-    # 1. Obtener los libros usando la función de database.py
-    libros = obtener_todos_los_libros() 
-    
-    # 2. enviando las variables que el HTML espera
-    return render_template('index.html', 
-                           libros_catalogo=libros, 
+    libros = obtener_todos_los_libros()
+    return render_template('index.html',
+                           libros_catalogo=libros,
                            total_libros=len(libros))
-
+ 
 if __name__ == "__main__":
-    inicializar_base_de_datos() 
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
