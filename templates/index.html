@@ -37,6 +37,7 @@
 html,body{height:100%;overflow:hidden}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex}
 
+/* SIDEBAR */
 aside{
   width:220px;flex-shrink:0;
   background:var(--bg2);
@@ -88,6 +89,7 @@ nav a .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
 .panel.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
+/* PAGE HEADER */
 .page-header{
   padding:32px 36px 24px;
   border-bottom:1px solid var(--border);
@@ -102,6 +104,7 @@ nav a .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
 .page-header-left p{font-size:0.82rem;color:var(--text3);margin-top:4px}
 .content{padding:28px 36px}
 
+/* CARDS */
 .card{
   background:var(--surface);
   border:1px solid var(--border);
@@ -110,10 +113,12 @@ nav a .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
 }
 .card-sm{padding:16px 18px}
 
+/* GRID UTILITIES */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 
+/* STAT CARDS */
 .stat-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--r);padding:20px 22px;
@@ -127,6 +132,7 @@ nav a .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
 .stat-lbl{font-size:0.72rem;color:var(--text3);margin-top:5px;letter-spacing:0.04em;text-transform:uppercase}
 .stat-change{font-size:0.72rem;margin-top:8px;display:flex;align-items:center;gap:4px}
 
+/* FORM */
 .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 label.fl{font-size:0.72rem;font-weight:500;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase}
 input,select,textarea{
@@ -146,6 +152,7 @@ input::placeholder{color:var(--text3)}
 select option{background:#1a1a23}
 textarea{resize:vertical;min-height:80px}
 
+/* BUTTONS */
 .btn{
   background:var(--gold);color:#0c0c0f;
   border:none;border-radius:var(--r2);
@@ -166,6 +173,7 @@ textarea{resize:vertical;min-height:80px}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold);background:var(--gold3)}
 .btn-xs{padding:5px 12px;font-size:0.76rem;border-radius:6px}
 
+/* BADGES */
 .badge{
   display:inline-flex;align-items:center;
   font-size:0.68rem;font-weight:600;
@@ -180,6 +188,7 @@ textarea{resize:vertical;min-height:80px}
 .badge-purple{background:var(--purple-bg);color:var(--purple)}
 .badge-gold{background:var(--gold3);color:var(--gold2)}
 
+/* TAGS */
 .tag-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
 .tag{
   background:var(--surface2);border:1px solid var(--border);
@@ -190,6 +199,7 @@ textarea{resize:vertical;min-height:80px}
 .tag:hover{border-color:var(--gold);color:var(--gold)}
 .tag.on{background:var(--gold3);border-color:rgba(212,168,67,0.35);color:var(--gold2)}
 
+/* BOOK GRID */
 .book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;margin-top:16px}
 .book-item{
   background:var(--surface);border:1px solid var(--border);
@@ -203,10 +213,12 @@ textarea{resize:vertical;min-height:80px}
 .book-auth{font-size:0.72rem;color:var(--text3)}
 .book-meta{font-size:0.7rem;color:var(--text3);margin-top:6px;display:flex;align-items:center;justify-content:space-between}
 
+/* SEARCH BAR */
 .search-wrap{position:relative;flex:1}
 .search-wrap input{padding-left:38px}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none}
 
+/* TABLE */
 .tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;font-size:0.83rem}
 th{
@@ -219,6 +231,7 @@ td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text2);ve
 tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:rgba(255,255,255,0.02)}
 
+/* RESULT BOX */
 .result-area{
   margin-top:16px;background:var(--bg3);
   border:1px solid var(--border);border-radius:var(--r);
@@ -229,17 +242,20 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 .result-ttl{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold2);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .result-body{font-size:0.86rem;line-height:1.8;color:var(--text2)}
 
+/* ALERTS */
 .alert{padding:11px 14px;border-radius:var(--r2);font-size:0.83rem;margin-top:12px;display:none}
 .alert.on{display:flex;align-items:flex-start;gap:9px;animation:fadeUp 0.2s ease}
 .alert-ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(62,207,142,0.2)}
 .alert-err{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,107,107,0.2)}
 .alert-inf{background:var(--blue-bg);color:var(--blue);border:1px solid rgba(96,165,250,0.2)}
 
+/* LOADER */
 .loader{display:none;align-items:center;gap:10px;font-size:0.83rem;color:var(--text3);margin-top:12px}
 .loader.on{display:flex}
 .spin{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* SPARQL */
 .sparql-block{
   background:var(--bg3);border:1px solid var(--border);
   border-radius:var(--r);padding:16px 18px;
@@ -251,8 +267,10 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 .sparql-block .var{color:var(--gold)}
 .sparql-block .fn{color:var(--green)}
 
+/* DIVIDER */
 hr{border:none;border-top:1px solid var(--border);margin:22px 0}
 
+/* LIST */
 ul.dot-list{list-style:none}
 ul.dot-list li{
   padding:7px 0;border-bottom:1px solid var(--border);
@@ -263,6 +281,7 @@ ul.dot-list li{
 ul.dot-list li:last-child{border-bottom:none}
 ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
 
+/* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center}
 .overlay.on{display:flex}
 .modal-box{
@@ -274,8 +293,10 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
 .modal-box .modal-sub{font-size:0.82rem;color:var(--text3);margin-bottom:20px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
 
+/* SECTION TITLE */
 .sec-ttl{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:14px;font-style:italic}
 
+/* ONTOLOGY VIZ */
 .onto-node{
   background:var(--surface2);border:1px solid var(--border2);
   border-radius:10px;padding:14px;text-align:center;
@@ -285,6 +306,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
 .onto-props{font-size:0.7rem;color:var(--text3);line-height:1.7}
 .onto-arrow{display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:20px;padding:0 6px}
 
+/* HOME HERO */
 .hero-section{
   background:var(--bg2);
   border-bottom:1px solid var(--border);
@@ -305,6 +327,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
 .hero-search{display:flex;gap:10px;margin-top:22px;max-width:520px}
 .hero-search input{flex:1}
 
+/* QUICK ACTION GRID */
 .qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
 .qa-item{
   background:var(--surface);border:1px solid var(--border);
@@ -321,6 +344,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
 .qa-text strong{display:block;font-size:0.83rem;font-weight:500;color:var(--text);margin-bottom:1px}
 .qa-text span{font-size:0.72rem;color:var(--text3)}
 
+/* RESPONSIVE */
 @media(max-width:780px){
   aside{display:none}
   .content{padding:16px 18px}
@@ -369,7 +393,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
 
 <div class="main">
 
-// HOME 
+<!-- HOME -->
 <div id="panel-home" class="panel active">
   <div class="hero-section">
     <div class="hero-eyebrow">Sistema Bibliotecario</div>
@@ -443,7 +467,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
   </div>
 </div>
 
-// CATÁLOGO 
+<!-- CATÁLOGO -->
 <div id="panel-catalogo" class="panel">
   <div class="page-header">
     <div class="page-header-left">
@@ -497,7 +521,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
   </div>
 </div>
 
-// USUARIOS 
+<!-- USUARIOS -->
 <div id="panel-usuarios" class="panel">
   <div class="page-header">
     <div class="page-header-left">
@@ -563,7 +587,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
   </div>
 </div>
 
-// PRÉSTAMOS 
+<!-- PRÉSTAMOS -->
 <div id="panel-prestamos" class="panel">
   <div class="page-header">
     <div class="page-header-left">
@@ -619,7 +643,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
   </div>
 </div>
 
-// DBPEDIA 
+<!-- DBPEDIA -->
 <div id="panel-dbpedia" class="panel">
   <div class="page-header">
     <div class="page-header-left">
@@ -675,7 +699,7 @@ ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;backgro
   </div>
 </div>
 
-// SEMÁNTICO 
+<!-- SEMÁNTICO -->
 <div id="panel-semantico" class="panel">
   <div class="page-header">
     <div class="page-header-left">
@@ -747,7 +771,7 @@ WHERE {
 
 </div><!-- /main -->
 
-// RESERVAS  
+<!-- RESERVE MODAL -->
 <div class="overlay" id="res-overlay">
   <div class="modal-box">
     <h3>Reservar libro</h3>
@@ -768,7 +792,7 @@ WHERE {
   </div>
 </div>
 
-// AGREGAR LIBRO 
+<!-- ADD BOOK MODAL -->
 <div class="overlay" id="ab-overlay">
   <div class="modal-box">
     <h3>Agregar libro</h3>
@@ -857,7 +881,7 @@ function heroSearch(){
   go('catalogo');filterCat();
 }
 
-// CATALOGO
+// CATALOG
 let tagF='';
 function tagFilter(el,cat){
   document.querySelectorAll('#cat-tags .tag').forEach(t=>t.classList.remove('on'));
@@ -902,7 +926,7 @@ function renderBooks(list){
   document.getElementById('bk-count').textContent=`${list.length} libro${list.length!==1?'s':''} encontrado${list.length!==1?'s':''}`;
 }
 
-// USUARIOS
+// USERS
 function renderUsers(){
   document.getElementById('us-tbody').innerHTML=USERS.map(u=>`
     <tr>
@@ -948,7 +972,7 @@ function regUser(){
   renderUsers();
 }
 
-// PRESTAMOS
+// LOANS
 function renderLoans(){
   document.getElementById('ln-tbody').innerHTML=LOANS.map((l,i)=>`
     <tr>
@@ -989,7 +1013,7 @@ function regLoan(){
   renderLoans();
 }
 
-// DBPEDIA BUSCADOR
+// DBPEDIA
 function updateSparql(){
   const term=(document.getElementById('dp-term').value.trim().replace(/ /g,'_'))||'Recurso';
   const lang=document.getElementById('dp-lang').value;
@@ -1014,17 +1038,17 @@ function quickDP(term,lang,type){
   document.getElementById('dp-type').value=type;
   updateSparql();queryDBpedia();
 }
-
+// Estado guardado de la última lista de obras (para el botón "volver")
 let _lastObrasHTML = null;
 let _lastObrasAutor = '';
 let _lastObrasLang  = '';
 
 function renderObras(items, autorTerm, lang, base){
   const result = document.getElementById('dp-result');
-  _lastObrasHTML  = null; 
+  _lastObrasHTML  = null; // se reconstruye cada vez desde los datos originales
   _lastObrasAutor = autorTerm;
   _lastObrasLang  = lang;
-  _lastObrasItems = items; 
+  _lastObrasItems = items; // guardamos el array para poder reconstruir
   result.classList.add('on');
   result.innerHTML = buildObrasHTML(items, autorTerm, lang, base);
 }
@@ -1046,6 +1070,7 @@ let _lastObrasItems = [];
 function volverALista(){
   const result = document.getElementById('dp-result');
   const base = _lastObrasLang==='en'?'dbpedia.org':`${_lastObrasLang}.dbpedia.org`;
+  // Restaurar formulario al estado del autor
   document.getElementById('dp-term').value = _lastObrasAutor;
   document.getElementById('dp-lang').value = _lastObrasLang;
   document.getElementById('dp-type').value = 'obras';
@@ -1053,7 +1078,7 @@ function volverALista(){
   result.classList.add('on');
   result.innerHTML = buildObrasHTML(_lastObrasItems, _lastObrasAutor, _lastObrasLang, base);
 }
-//CONSULTA LOCAL
+
 async function queryDBpedia(){
   const term=document.getElementById('dp-term').value.trim().replace(/ /g,'_');
   const lang=document.getElementById('dp-lang').value;
@@ -1086,6 +1111,7 @@ async function queryDBpedia(){
     } else {
       const descs=bindings.map(b=>b.descripcion?.value);
       const text=descs.find(d=>d&&d.length>100)||descs[0]||'';
+      // Mostrar botón "volver" solo si hay una lista de obras guardada
       const btnVolver = _lastObrasItems.length
         ? `<button onclick="volverALista()" style="display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;background:transparent;border:1px solid var(--border2);color:var(--text2);border-radius:6px;padding:6px 14px;font-size:0.78rem;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.15s"
             onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'"
@@ -1123,7 +1149,7 @@ function searchObraFromList(obraNombre, lang){
   queryDBpedia();
 }
 
-// SEMANTICA
+// SEMANTIC
 function semUser(){
   const name=document.getElementById('sm-user').value.trim();
   const box=document.getElementById('sm-ur');box.classList.add('on');
@@ -1161,7 +1187,7 @@ function semBook(){
 }
 function getType(fn){const u=USERS.find(x=>(x.name+' '+x.last)===fn);return u?u.type:'Usuario';}
 
-// RESERVA
+// RESERVE
 let curBook='';
 function reserveBook(title,status){
   if(status!=='available') return;
@@ -1182,7 +1208,7 @@ function confirmRes(){
   setTimeout(()=>{closeModal();renderBooks(BOOKS);},1500);
 }
 
-// Agregar libro
+// ADD BOOK
 function openAddBook(){document.getElementById('ab-overlay').classList.add('on');}
 function closeModal2(){document.getElementById('ab-overlay').classList.remove('on');document.getElementById('ab-notif').className='alert';}
 function addBook(){
@@ -1197,7 +1223,7 @@ function addBook(){
   setTimeout(()=>{closeModal2();renderBooks(BOOKS);},1400);
 }
 
-// para mostrar catalogo
+// INIT
 renderBooks(BOOKS);renderUsers();renderLoans();
 const td=new Date().toISOString().split('T')[0];
 document.getElementById('ln-date').value=td;
@@ -1208,7 +1234,7 @@ function deleteBook(id) {
   if (!bk) return;
   
   if (bk.status === 'reserved' || bk.status === 'borrowed') {
-    alert(` PROTECCIÓN DE INVENTARIO:\nNo puedes eliminar "${bk.title}" porque actualmente está ${bk.status === 'reserved' ? 'reservado' : 'prestado'}.`);
+    alert(`⚠️ PROTECCIÓN DE INVENTARIO:\nNo puedes eliminar "${bk.title}" porque actualmente está ${bk.status === 'reserved' ? 'reservado' : 'prestado'}.`);
     return;
   }
   
