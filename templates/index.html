@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblio — Biblioteca Semántica</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#070707;
+  --bg2:#000000;
+  --bg3:#070707;
+  --surface:#0d0d0e;
+  --surface2:#000000;
+  --border:rgba(2, 2, 2, 0.07);
+  --border2:rgba(255,255,255,0.12);
+  --gold:#d4a843;
+  --gold2:#f0c96a;
+  --gold3:rgba(212,168,67,0.12);
+  --text:#f0ede8;
+  --text2:#fbfbff;
+  --text3:#f5f5fa;
+  --green:#3ecf8e;
+  --green-bg:rgba(62,207,142,0.1);
+  --red:#ff6b6b;
+  --red-bg:rgba(255,107,107,0.1);
+  --blue:#60a5fa;
+  --blue-bg:rgba(96,165,250,0.1);
+  --amber:#fbbf24;
+  --amber-bg:rgba(251,191,36,0.1);
+  --purple:#a78bfa;
+  --purple-bg:rgba(167,139,250,0.1);
+  --r:12px;
+  --r2:8px;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex}
+
+aside{
+  width:220px;flex-shrink:0;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  padding:0;
+  height:100vh;
+  overflow:hidden;
+}
+.sidebar-logo{
+  padding:28px 24px 20px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-logo h1{
+  font-family:'Playfair Display',serif;
+  font-size:1.5rem;font-weight:700;
+  color:var(--gold2);letter-spacing:0.01em;
+}
+.sidebar-logo p{font-size:0.65rem;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-top:2px}
+
+.nav-section{padding:16px 12px 8px;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3)}
+nav a{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;margin:1px 0;
+  border-radius:var(--r2);cursor:pointer;
+  font-size:0.83rem;color:var(--text2);
+  transition:all 0.15s;border:1px solid transparent;
+  text-decoration:none;
+}
+nav a:hover{color:var(--text);background:var(--surface)}
+nav a.active{color:var(--gold2);background:var(--gold3);border-color:rgba(212,168,67,0.2)}
+nav a .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+
+.sidebar-stats{
+  margin-top:auto;padding:16px;
+  border-top:1px solid var(--border);
+}
+.mini-stat{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.mini-stat-label{font-size:0.72rem;color:var(--text3)}
+.mini-stat-val{font-size:0.78rem;font-weight:600;color:var(--gold)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;background:var(--bg);height:100vh}
+.main::-webkit-scrollbar{width:6px}
+.main::-webkit-scrollbar-track{background:transparent}
+.main::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:3px}
+
+.panel{display:none;animation:fadeUp 0.3s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.page-header{
+  padding:32px 36px 24px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg2);
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.page-header-left h2{
+  font-family:'Playfair Display',serif;
+  font-size:1.9rem;font-weight:700;
+  color:var(--text);letter-spacing:-0.01em;
+}
+.page-header-left p{font-size:0.82rem;color:var(--text3);margin-top:4px}
+.content{padding:28px 36px}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:22px;
+}
+.card-sm{padding:16px 18px}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px 22px;
+}
+.stat-icon{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;margin-bottom:14px;
+}
+.stat-num{font-size:2rem;font-weight:700;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.stat-lbl{font-size:0.72rem;color:var(--text3);margin-top:5px;letter-spacing:0.04em;text-transform:uppercase}
+.stat-change{font-size:0.72rem;margin-top:8px;display:flex;align-items:center;gap:4px}
+
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+label.fl{font-size:0.72rem;font-weight:500;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase}
+input,select,textarea{
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:0.87rem;
+  padding:10px 13px;
+  outline:none;
+  transition:border-color 0.15s,background 0.15s;
+  width:100%;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);background:rgba(212,168,67,0.05)}
+input::placeholder{color:var(--text3)}
+select option{background:#1a1a23}
+textarea{resize:vertical;min-height:80px}
+
+.btn{
+  background:var(--gold);color:#0c0c0f;
+  border:none;border-radius:var(--r2);
+  padding:10px 22px;font-family:'Inter',sans-serif;
+  font-size:0.84rem;font-weight:600;
+  cursor:pointer;transition:all 0.15s;
+  letter-spacing:0.01em;display:inline-flex;align-items:center;gap:7px;
+}
+.btn:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-ghost{
+  background:transparent;border:1px solid var(--border2);
+  color:var(--text2);border-radius:var(--r2);
+  padding:8px 16px;font-family:'Inter',sans-serif;
+  font-size:0.82rem;cursor:pointer;transition:all 0.15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);background:var(--gold3)}
+.btn-xs{padding:5px 12px;font-size:0.76rem;border-radius:6px}
+
+.badge{
+  display:inline-flex;align-items:center;
+  font-size:0.68rem;font-weight:600;
+  padding:3px 9px;border-radius:20px;
+  letter-spacing:0.04em;text-transform:uppercase;
+  gap:5px;
+}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}
+.badge-gold{background:var(--gold3);color:var(--gold2)}
+
+.tag-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text2);border-radius:20px;
+  padding:5px 14px;font-size:0.76rem;
+  cursor:pointer;transition:all 0.15s;
+}
+.tag:hover{border-color:var(--gold);color:var(--gold)}
+.tag.on{background:var(--gold3);border-color:rgba(212,168,67,0.35);color:var(--gold2)}
+
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;margin-top:16px}
+.book-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:0;overflow:hidden;
+  cursor:pointer;transition:all 0.18s;
+}
+.book-item:hover{border-color:var(--border2);transform:translateY(-3px);background:var(--surface2)}
+.book-cover{height:7px}
+.book-body{padding:14px}
+.book-ttl{font-size:0.87rem;font-weight:500;color:var(--text);line-height:1.35;margin-bottom:4px}
+.book-auth{font-size:0.72rem;color:var(--text3)}
+.book-meta{font-size:0.7rem;color:var(--text3);margin-top:6px;display:flex;align-items:center;justify-content:space-between}
+
+.search-wrap{position:relative;flex:1}
+.search-wrap input{padding-left:38px}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none}
+
+.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:0.83rem}
+th{
+  text-align:left;padding:11px 16px;
+  font-size:0.68rem;font-weight:600;color:var(--text3);
+  letter-spacing:0.09em;text-transform:uppercase;
+  background:var(--surface);border-bottom:1px solid var(--border);
+}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,0.02)}
+
+.result-area{
+  margin-top:16px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:18px;display:none;
+  animation:fadeUp 0.25s ease;
+}
+.result-area.on{display:block}
+.result-ttl{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold2);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.result-body{font-size:0.86rem;line-height:1.8;color:var(--text2)}
+
+.alert{padding:11px 14px;border-radius:var(--r2);font-size:0.83rem;margin-top:12px;display:none}
+.alert.on{display:flex;align-items:flex-start;gap:9px;animation:fadeUp 0.2s ease}
+.alert-ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(62,207,142,0.2)}
+.alert-err{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,107,107,0.2)}
+.alert-inf{background:var(--blue-bg);color:var(--blue);border:1px solid rgba(96,165,250,0.2)}
+
+.loader{display:none;align-items:center;gap:10px;font-size:0.83rem;color:var(--text3);margin-top:12px}
+.loader.on{display:flex}
+.spin{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.sparql-block{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 18px;
+  font-family:'Courier New',monospace;font-size:0.75rem;
+  color:rgba(240,237,232,0.5);white-space:pre-wrap;line-height:1.65;
+}
+.sparql-block .kw{color:#a78bfa}
+.sparql-block .uri{color:#60a5fa}
+.sparql-block .var{color:var(--gold)}
+.sparql-block .fn{color:var(--green)}
+
+hr{border:none;border-top:1px solid var(--border);margin:22px 0}
+
+ul.dot-list{list-style:none}
+ul.dot-list li{
+  padding:7px 0;border-bottom:1px solid var(--border);
+  font-size:0.85rem;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+  transition:background 0.15s, padding-left 0.15s;
+}
+ul.dot-list li:last-child{border-bottom:none}
+ul.dot-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.modal-box{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:16px;padding:28px;max-width:460px;
+  width:90%;animation:fadeUp 0.2s ease;
+}
+.modal-box h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--text);margin-bottom:4px}
+.modal-box .modal-sub{font-size:0.82rem;color:var(--text3);margin-bottom:20px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+
+.sec-ttl{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:14px;font-style:italic}
+
+.onto-node{
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:14px;text-align:center;
+}
+.onto-icon{font-size:24px;margin-bottom:8px}
+.onto-name{font-size:0.78rem;font-weight:600;color:var(--gold2);margin-bottom:5px}
+.onto-props{font-size:0.7rem;color:var(--text3);line-height:1.7}
+.onto-arrow{display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:20px;padding:0 6px}
+
+.hero-section{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:40px 36px 32px;
+  position:relative;overflow:hidden;
+}
+.hero-section::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle, rgba(212,168,67,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow{font-size:0.68rem;color:var(--text3);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+.hero-title{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:var(--text);line-height:1.15;letter-spacing:-0.01em;margin-bottom:12px}
+.hero-title em{font-style:italic;color:var(--gold2)}
+.hero-sub{font-size:0.88rem;color:var(--text3);line-height:1.7;max-width:500px}
+.hero-search{display:flex;gap:10px;margin-top:22px;max-width:520px}
+.hero-search input{flex:1}
+
+.qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+.qa-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 18px;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;gap:12px;
+}
+.qa-item:hover{border-color:var(--gold);background:var(--gold3)}
+.qa-icon{
+  width:36px;height:36px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.qa-text strong{display:block;font-size:0.83rem;font-weight:500;color:var(--text);margin-bottom:1px}
+.qa-text span{font-size:0.72rem;color:var(--text3)}
+
+@media(max-width:780px){
+  aside{display:none}
+  .content{padding:16px 18px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .hero-title{font-size:1.9rem}
+}
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="sidebar-logo">
+    <h1>Oasis Literario</h1>
+    <p>Biblioteca Semántica</p>
+  </div>
+  <div class="nav-section">Principal</div>
+  <nav>
+    <a class="active" onclick="go('home')">
+      <span class="icon">⌂</span> Inicio
+    </a>
+    <a onclick="go('catalogo')">
+      <span class="icon">⊞</span> Catálogo
+    </a>
+    <a onclick="go('usuarios')">
+      <span class="icon">◎</span> Usuarios
+    </a>
+    <a onclick="go('prestamos')">
+      <span class="icon">⇄</span> Préstamos
+    </a>
+  </nav>
+  <div class="nav-section">Web Semántica</div>
+  <nav>
+    <a onclick="go('dbpedia')">
+      <span class="icon">⬡</span> DBpedia
+    </a>
+    <a onclick="go('semantico')">
+      <span class="icon">◈</span> SPARQL Local
+    </a>
+  </nav>
+  <div class="sidebar-stats">
+    <div class="mini-stat"><span class="mini-stat-label">Libros</span><span class="mini-stat-val">{{ total_libros }}</span></div>
+    <div class="mini-stat"><span class="mini-stat-label">Usuarios</span><span class="mini-stat-val">342</span></div>
+    <div class="mini-stat"><span class="mini-stat-label">Préstamos activos</span><span class="mini-stat-val">89</span></div>
+  </div>
+</aside>
+
+<div class="main">
+
+// HOME 
+<div id="panel-home" class="panel active">
+  <div class="hero-section">
+    <div class="hero-eyebrow">Sistema Bibliotecario</div>
+    <h2 class="hero-title">  <em>Bienvenido a Oasis Literario</em></h2>
+    <div class="hero-search">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="hs-input" placeholder="Buscar libro, autor, categoría..." onkeydown="if(event.key==='Enter')heroSearch()">
+      </div>
+      <button class="btn" onclick="heroSearch()">Buscar</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="g4" style="margin-bottom:22px">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--gold3)">📖</div>
+        <div class="stat-num">{{ total_libros }}</div>
+        <div class="stat-lbl">Libros registrados</div>
+        <div class="stat-change" style="color:var(--green)">▲ 12 este mes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--blue-bg)">👤</div>
+        <div class="stat-num">342</div>
+        <div class="stat-lbl">Usuarios activos</div>
+        <div class="stat-change" style="color:var(--green)">▲ 8 nuevos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--amber-bg)">⇄</div>
+        <div class="stat-num">89</div>
+        <div class="stat-lbl">Préstamos activos</div>
+        <div class="stat-change" style="color:var(--amber)">◆ 5 por vencer</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--purple-bg)">◈</div>
+        <div class="stat-num">14</div>
+        <div class="stat-lbl">Categorías</div>
+        <div class="stat-change" style="color:var(--text3)">◆ Colección activa</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <p class="sec-ttl">Acceso rápido</p>
+        <div class="qa-grid">
+          <div class="qa-item" onclick="go('catalogo')">
+            <div class="qa-icon" style="background:var(--gold3)">📖</div>
+            <div class="qa-text"><strong>Ver catálogo</strong><span>Explorar colección</span></div>
+          </div>
+          <div class="qa-item" onclick="go('prestamos')">
+            <div class="qa-icon" style="background:var(--blue-bg)">➕</div>
+            <div class="qa-text"><strong>Nuevo préstamo</strong><span>Registrar salida</span></div>
+          </div>
+          <div class="qa-item" onclick="go('dbpedia')">
+            <div class="qa-icon" style="background:var(--purple-bg)">⬡</div>
+            <div class="qa-text"><strong>Consultar DBpedia</strong><span>Web semántica</span></div>
+          </div>
+          <div class="qa-item" onclick="go('semantico')">
+            <div class="qa-icon" style="background:var(--green-bg)">◈</div>
+            <div class="qa-text"><strong>SPARQL local</strong><span>Ontología OWL</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <p class="sec-ttl">Incorporaciones recientes</p>
+        <ul class="dot-list">
+          {% for libro in libros_catalogo[:5] %}
+          <li>{{ libro.titulo }} — {{ libro.autor }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+// CATÁLOGO 
+<div id="panel-catalogo" class="panel">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>Catálogo de libros</h2>
+      <p>Filtra por categoría, estado y disponibilidad</p>
+    </div>
+    <button class="btn-ghost" onclick="openAddBook()">+ Agregar libro</button>
+  </div>
+  <div class="content">
+    <div class="card card-sm" style="margin-bottom:16px">
+      <div class="g3" style="gap:12px;margin-bottom:14px">
+        <div class="form-group" style="margin:0">
+          <div class="search-wrap">
+            <span class="search-icon">⌕</span>
+            <input type="text" id="cat-q" placeholder="Título o autor..." oninput="filterCat()">
+          </div>
+        </div>
+        <div class="form-group" style="margin:0">
+          <select id="cat-cat" onchange="filterCat()">
+            <option value="">Todas las categorías</option>
+            <option>Literatura</option><option>Ciencia</option><option>Historia</option>
+            <option>Filosofía</option><option>Arte</option><option>Tecnología</option>
+            <option>Educación</option><option>Derecho</option><option>Medicina</option><option>Matemática</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <select id="cat-st" onchange="filterCat()">
+            <option value="">Todos los estados</option>
+            <option value="available">Disponible</option>
+            <option value="borrowed">Prestado</option>
+            <option value="reserved">Reservado</option>
+          </select>
+        </div>
+      </div>
+      <div class="tag-row" id="cat-tags">
+        <span class="tag on" onclick="tagFilter(this,'')">Todo</span>
+        <span class="tag" onclick="tagFilter(this,'Literatura')">Literatura</span>
+        <span class="tag" onclick="tagFilter(this,'Ciencia')">Ciencia</span>
+        <span class="tag" onclick="tagFilter(this,'Historia')">Historia</span>
+        <span class="tag" onclick="tagFilter(this,'Filosofía')">Filosofía</span>
+        <span class="tag" onclick="tagFilter(this,'Arte')">Arte</span>
+        <span class="tag" onclick="tagFilter(this,'Tecnología')">Tecnología</span>
+        <span class="tag" onclick="tagFilter(this,'Educación')">Educación</span>
+        <span class="tag" onclick="tagFilter(this,'Derecho')">Derecho</span>
+        <span class="tag" onclick="tagFilter(this,'Medicina')">Medicina</span>
+        <span class="tag" onclick="tagFilter(this,'Matemática')">Matemática</span>
+      </div>
+      <p id="bk-count" style="font-size:0.76rem;color:var(--text3)"></p>
+    </div>
+    <div class="book-grid" id="book-grid"></div>
+  </div>
+</div>
+
+// USUARIOS 
+<div id="panel-usuarios" class="panel">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>Gestión de usuarios</h2>
+      <p>Consulta, registra y administra perfiles</p>
+    </div>
+  </div>
+  <div class="content">
+    <div class="g2" style="margin-bottom:20px">
+      <div class="card">
+        <p class="sec-ttl">Buscar usuario</p>
+        <div class="form-group">
+          <label class="fl">Nombre</label>
+          <input type="text" id="us-name" placeholder="ej. Juan García">
+        </div>
+        <div class="form-group">
+          <label class="fl">Tipo de perfil</label>
+          <select id="us-type">
+            <option value="">Todos</option>
+            <option>Estudiante</option><option>Profesor</option>
+            <option>Investigador</option><option>PublicoGeneral</option>
+          </select>
+        </div>
+        <button class="btn" onclick="searchUser()">Buscar</button>
+        <div id="us-result" class="result-area"></div>
+      </div>
+      <div class="card">
+        <p class="sec-ttl">Registrar usuario</p>
+        <div class="g2" style="gap:10px">
+          <div class="form-group">
+            <label class="fl">Nombre</label>
+            <input type="text" id="nu-name" placeholder="Nombre">
+          </div>
+          <div class="form-group">
+            <label class="fl">Apellido</label>
+            <input type="text" id="nu-last" placeholder="Apellido">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="fl">Correo electrónico</label>
+          <input type="email" id="nu-email" placeholder="correo@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label class="fl">Tipo de usuario</label>
+          <select id="nu-type">
+            <option>Estudiante</option><option>Profesor</option>
+            <option>Investigador</option><option>PublicoGeneral</option>
+          </select>
+        </div>
+        <button class="btn" onclick="regUser()">Registrar</button>
+        <div id="nu-notif" class="alert"></div>
+      </div>
+    </div>
+    <p class="sec-ttl">Usuarios registrados</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Nombre</th><th>Correo</th><th>Tipo</th><th>Préstamos</th><th><th>Acción</th><th></th>
+        </tr></thead>
+        <tbody id="us-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+// PRÉSTAMOS 
+<div id="panel-prestamos" class="panel">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>Gestión de préstamos</h2>
+      <p>Registra, consulta y gestiona devoluciones</p>
+    </div>
+  </div>
+  <div class="content">
+    <div class="g2" style="margin-bottom:20px">
+      <div class="card">
+        <p class="sec-ttl">Registrar préstamo</p>
+        <div class="form-group">
+          <label class="fl">Usuario</label>
+          <input type="text" id="ln-user" placeholder="Nombre completo del usuario">
+        </div>
+        <div class="form-group">
+          <label class="fl">Libro</label>
+          <input type="text" id="ln-book" placeholder="Título del libro">
+        </div>
+        <div class="g2" style="gap:10px">
+          <div class="form-group">
+            <label class="fl">Fecha préstamo</label>
+            <input type="date" id="ln-date">
+          </div>
+          <div class="form-group">
+            <label class="fl">Devolución</label>
+            <input type="date" id="ln-ret">
+          </div>
+        </div>
+        <button class="btn" onclick="regLoan()">Registrar</button>
+        <div id="ln-notif" class="alert"></div>
+      </div>
+      <div class="card">
+        <p class="sec-ttl">Consultar disponibilidad</p>
+        <p style="font-size:0.81rem;color:var(--text3);margin-bottom:14px;line-height:1.7">Verifica si un libro está disponible antes de registrar el préstamo.</p>
+        <div class="form-group">
+          <label class="fl">Título del libro</label>
+          <input type="text" id="bk-title" placeholder="ej. Quijote...">
+        </div>
+        <button class="btn" onclick="checkBook()">Verificar</button>
+        <div id="bk-result" class="result-area"></div>
+      </div>
+    </div>
+    <p class="sec-ttl">Préstamos activos</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Usuario</th><th>Libro</th><th>Préstamo</th><th>Devolución</th><th>Estado</th><th>Acción</th>
+        </tr></thead>
+        <tbody id="ln-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+// DBPEDIA 
+<div id="panel-dbpedia" class="panel">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>Consulta multilingüe — DBpedia</h2>
+      <p>Acceso a la web semántica en múltiples idiomas vía SPARQL</p>
+    </div>
+  </div>
+  <div class="content">
+    <div class="card" style="margin-bottom:16px">
+      <div class="g3" style="gap:12px;margin-bottom:14px">
+        <div class="form-group" style="margin:0">
+          <label class="fl">Término (URI)</label>
+          <input type="text" id="dp-term" placeholder="ej. Gabriel_García_Márquez" oninput="updateSparql()">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="fl">Idioma / Edición</label>
+          <select id="dp-lang" onchange="updateSparql()">
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Francés</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="fl">Tipo de consulta</label>
+          <select id="dp-type" onchange="updateSparql()">
+            <option value="obras">Obras del autor</option>
+            <option value="bio">Biografía / Sinopsis</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn" onclick="queryDBpedia()">Consultar DBpedia</button>
+        <div class="loader" id="dp-loader"><div class="spin"></div> Conectando con la web semántica...</div>
+      </div>
+    </div>
+
+    <div class="g2" style="align-items:start">
+      <div>
+        <p style="font-size:0.72rem;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">Consulta SPARQL generada</p>
+        <div class="sparql-block" id="sp-preview"></div>
+      </div>
+      <div id="dp-result" class="result-area" style="margin-top:0"></div>
+    </div>
+    <hr>
+    <p class="sec-ttl">Ejemplos de búsqueda rápida</p>
+    <div class="tag-row">
+      <span class="tag" onclick="quickDP('Gabriel_García_Márquez','es','obras')">García Márquez — obras ES</span>
+      <span class="tag" onclick="quickDP('Miguel_de_Cervantes','es','obras')">Cervantes — obras ES</span>
+      <span class="tag" onclick="quickDP('Victor_Hugo','fr','obras')">Victor Hugo — œuvres FR</span>
+      <span class="tag" onclick="quickDP('Jorge_Luis_Borges','es','bio')">Borges — biografía ES</span>
+      <span class="tag" onclick="quickDP('1984','en','bio')">1984 — synopsis EN</span>
+      <span class="tag" onclick="quickDP('Isabel_Allende','es','obras')">Isabel Allende — obras ES</span>
+    </div>
+  </div>
+</div>
+
+// SEMÁNTICO 
+<div id="panel-semantico" class="panel">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>Metabuscador SPARQL local</h2>
+      <p>Consulta la ontología OWL de la biblioteca</p>
+    </div>
+  </div>
+  <div class="content">
+    <div class="g2" style="margin-bottom:20px">
+      <div class="card">
+        <p class="sec-ttl">Buscar por usuario</p>
+        <p style="font-size:0.8rem;color:var(--text3);margin-bottom:12px;line-height:1.6">Consulta qué libros tiene prestados un usuario y su tipo de perfil.</p>
+        <div class="form-group">
+          <label class="fl">Nombre del usuario</label>
+          <input type="text" id="sm-user" placeholder="ej. Juan">
+        </div>
+        <button class="btn" onclick="semUser()">Buscar</button>
+        <div id="sm-ur" class="result-area"></div>
+      </div>
+      <div class="card">
+        <p class="sec-ttl">Buscar por libro</p>
+        <p style="font-size:0.8rem;color:var(--text3);margin-bottom:12px;line-height:1.6">Verifica disponibilidad y ve quién tiene prestado el libro.</p>
+        <div class="form-group">
+          <label class="fl">Título del libro</label>
+          <input type="text" id="sm-book" placeholder="ej. Quijote">
+        </div>
+        <button class="btn" onclick="semBook()">Verificar</button>
+        <div id="sm-br" class="result-area"></div>
+      </div>
+    </div>
+
+    <p class="sec-ttl">Arquitectura de la ontología</p>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="onto-node" style="flex:1">
+          <div class="onto-icon">👤</div>
+          <div class="onto-name">ont:Usuario</div>
+          <div class="onto-props">ont:nombre<br>ont:apellido<br>rdf:type → Perfil</div>
+        </div>
+        <div class="onto-arrow">→</div>
+        <div class="onto-node" style="flex:1">
+          <div class="onto-icon">📋</div>
+          <div class="onto-name">ont:Prestamo</div>
+          <div class="onto-props">ont:realizaPrestamo<br>ont:incluyeRecurso<br>fecha inicio / fin</div>
+        </div>
+        <div class="onto-arrow">→</div>
+        <div class="onto-node" style="flex:1">
+          <div class="onto-icon">📚</div>
+          <div class="onto-name">ont:Libro</div>
+          <div class="onto-props">ont:tieneTitulo<br>ont:tieneAutor<br>ont:categoria</div>
+        </div>
+      </div>
+      <hr>
+      <p style="font-size:0.72rem;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">Consulta de ejemplo</p>
+      <div class="sparql-block">SELECT DISTINCT ?tituloLibro ?tipoUsuario
+WHERE {
+  ?usuario ont:nombre ?nombreUsuario .
+  FILTER(regex(str(?nombreUsuario), "Juan", "i"))
+  ?usuario rdf:type ?tipoURI .
+  BIND(STRAFTER(STR(?tipoURI), "#") AS ?tipoUsuario)
+  FILTER(?tipoUsuario IN ("Estudiante","Investigador","Profesor"))
+  ?usuario ont:realizaPrestamo ?prestamo .
+  ?prestamo ont:incluyeRecurso ?libro .
+  ?libro ont:tieneTitulo ?tituloLibro .
+}</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+// RESERVAS  
+<div class="overlay" id="res-overlay">
+  <div class="modal-box">
+    <h3>Reservar libro</h3>
+    <p class="modal-sub" id="res-ttl"></p>
+    <div class="form-group">
+      <label class="fl">Tu nombre</label>
+      <input type="text" id="res-user" placeholder="Nombre completo">
+    </div>
+    <div class="form-group">
+      <label class="fl">Fecha de recogida</label>
+      <input type="date" id="res-date">
+    </div>
+    <div id="res-notif" class="alert"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn" onclick="confirmRes()">Confirmar reserva</button>
+    </div>
+  </div>
+</div>
+
+// AGREGAR LIBRO 
+<div class="overlay" id="ab-overlay">
+  <div class="modal-box">
+    <h3>Agregar libro</h3>
+    <p class="modal-sub">Registrar nuevo título al catálogo</p>
+    <div class="g2" style="gap:10px">
+      <div class="form-group">
+        <label class="fl">Título</label>
+        <input type="text" id="ab-title" placeholder="Título del libro">
+      </div>
+      <div class="form-group">
+        <label class="fl">Autor</label>
+        <input type="text" id="ab-author" placeholder="Autor">
+      </div>
+    </div>
+    <div class="g2" style="gap:10px">
+      <div class="form-group">
+        <label class="fl">Categoría</label>
+        <select id="ab-cat">
+          <option>Literatura</option><option>Ciencia</option><option>Historia</option>
+          <option>Filosofía</option><option>Arte</option><option>Tecnología</option>
+          <option>Educación</option><option>Derecho</option><option>Medicina</option>
+          <option>Matemática</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="fl">Año</label>
+        <input type="number" id="ab-year" placeholder="2024">
+      </div>
+    </div>
+    <div id="ab-notif" class="alert"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal2()">Cancelar</button>
+      <button class="btn" onclick="addBook()">Agregar libro</button>
+    </div>
+  </div>
+</div>
+
+<script type="text/template" id="books-data">
+{% for libro in libros_catalogo %}{{ libro.id }}|{{ libro.titulo }}|{{ libro.autor }}|{{ libro.genero }}|{{ 'available' if libro.estado == 'DISPONIBLE' else ('borrowed' if libro.estado == 'PRESTADO' else 'reserved') }}{% if not loop.last %}||{% endif %}{% endfor %}
+</script>
+
+<script>
+let BOOKS = document.getElementById('books-data').innerHTML.trim().split('||').map((row,i)=>{
+  const p=row.split('|');
+  return {id:parseInt(p[0]),title:p[1],author:p[2],cat:p[3],status:p[4],cover:""};
+});
+const USERS = [
+  {id:1,name:"Juan",last:"García",email:"juan@gmail.com",type:"Estudiante",loans:["Don Quijote de la Mancha"]},
+  {id:2,name:"María",last:"López",email:"maria@gmail.com",type:"Investigador",loans:["El Origen de las Especies","Historia del Arte"]},
+  {id:3,name:"Carlos",last:"Rodríguez",email:"carlos@gmail.com",type:"Profesor",loans:["La República","Pedagogía del Oprimido"]},
+  {id:4,name:"Ana",last:"Martínez",email:"ana@gmail.com",type:"Estudiante",loans:[]},
+  {id:5,name:"Pedro",last:"Sánchez",email:"pedro@gmail.com",type:"PublicoGeneral",loans:[]},
+];
+const LOANS = [
+  {user:"Juan García",book:"Don Quijote de la Mancha",d0:"2025-05-10",d1:"2025-05-31",st:"Activo"},
+  {user:"María López",book:"El Origen de las Especies",d0:"2025-05-15",d1:"2025-06-15",st:"Activo"},
+  {user:"Carlos Rodríguez",book:"La República",d0:"2025-04-20",d1:"2025-05-20",st:"Vencido"},
+  {user:"María López",book:"Historia del Arte",d0:"2025-05-20",d1:"2025-06-20",st:"Activo"},
+  {user:"Carlos Rodríguez",book:"Pedagogía del Oprimido",d0:"2025-05-05",d1:"2025-06-05",st:"Activo"},
+];
+const CAT_COLORS = {
+  Literatura:"#d4a843",Ciencia:"#60a5fa",Historia:"#fb923c",
+  Filosofía:"#a78bfa",Arte:"#f472b6",Tecnología:"#34d399",
+  Educación:"#4ade80",Derecho:"#f87171",Medicina:"#2dd4bf",Matemática:"#e879f9"
+};
+const TYPE_BADGE = {
+  Estudiante:"badge-blue",Profesor:"badge-green",
+  Investigador:"badge-purple",PublicoGeneral:"badge-gold",Usuario:"badge-gold"
+};
+
+function go(id) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  const map={home:0,catalogo:1,usuarios:2,prestamos:3,dbpedia:4,semantico:5};
+  document.querySelectorAll('nav a')[map[id]].classList.add('active');
+  if(id==='catalogo') renderBooks(BOOKS);
+  if(id==='usuarios') renderUsers();
+  if(id==='prestamos') renderLoans();
+}
+
+function heroSearch(){
+  const v=document.getElementById('hs-input').value.trim();
+  if(!v) return;
+  document.getElementById('cat-q').value=v;
+  go('catalogo');filterCat();
+}
+
+// CATALOGO
+let tagF='';
+function tagFilter(el,cat){
+  document.querySelectorAll('#cat-tags .tag').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');tagF=cat;
+  document.getElementById('cat-cat').value=cat;filterCat();
+}
+function filterCat(){
+  const q=document.getElementById('cat-q').value.toLowerCase();
+  const cat=document.getElementById('cat-cat').value;
+  const st=document.getElementById('cat-st').value;
+  const f=BOOKS.filter(b=>{
+    const mq=!q||b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q);
+    const mc=!cat||b.cat===cat;
+    const ms=!st||b.status===st;
+    return mq&&mc&&ms;
+  });
+  renderBooks(f);
+}
+function renderBooks(list){
+  const g=document.getElementById('book-grid');
+  g.innerHTML=list.map(b=>{
+    const coverSrc='https://covers.openlibrary.org/b/title/'+encodeURIComponent(b.title)+'-M.jpg';
+    return `
+    <div class="book-item" style="position:relative;overflow:hidden;display:flex;flex-direction:column;" onclick="reserveBook('${b.title.replace(/'/g,"\\'")}','${b.status}')">
+      <div style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;">
+        <img src="${coverSrc}" alt="" style="width:100%;height:100%;object-fit:cover;opacity:0.28;" onerror="this.style.display='none'">
+      </div>
+      <div class="book-cover" style="background:${CAT_COLORS[b.cat]||'#888'};position:relative;z-index:1;"></div>
+      <div class="book-body" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;">
+        <div class="book-ttl">${b.title}</div>
+        <div class="book-auth">${b.author}</div>
+        <div style="flex:1;"></div>
+        <div class="book-meta" style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+          <span style="color:var(--text3);font-size:0.7rem;">${b.cat}</span>
+          <span class="badge ${b.status==='available'?'badge-green':b.status==='borrowed'?'badge-red':'badge-amber'}">
+            ${b.status==='available'?'Disponible':b.status==='borrowed'?'Prestado':'Reservado'}
+          </span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('bk-count').textContent=`${list.length} libro${list.length!==1?'s':''} encontrado${list.length!==1?'s':''}`;
+}
+
+// USUARIOS
+function renderUsers(){
+  document.getElementById('us-tbody').innerHTML=USERS.map(u=>`
+    <tr>
+      <td><strong style="color:var(--text)">${u.name} ${u.last}</strong></td>
+      <td>${u.email}</td>
+      <td><span class="badge ${TYPE_BADGE[u.type]||'badge-gold'}">${u.type}</span></td>
+      <td>${u.loans.length?u.loans.join(', '):'<span style="color:var(--text3)">—</span>'}</td>
+      <td><button class="btn-ghost btn-xs" onclick="quickViewUser(${u.id})">Ver</button></td><td style="text-align: right;">
+        <button class="btn btn-xs" style="background: transparent; color: #ef4444; border: 1px solid #ef4444; padding: 4px 8px; border-radius: 4px; cursor: pointer;" onclick="deleteUser('${u.email}')">
+          🗑 Eliminar
+        </button>
+    </tr>`).join('');
+}
+function searchUser(){
+  const name=document.getElementById('us-name').value.trim().toLowerCase();
+  const type=document.getElementById('us-type').value;
+  const found=USERS.filter(u=>(!name||(u.name+' '+u.last).toLowerCase().includes(name))&&(!type||u.type===type));
+  const box=document.getElementById('us-result');box.classList.add('on');
+  if(!found.length){box.innerHTML=`<div class="alert alert-err on">No se encontraron usuarios.</div>`;return;}
+  box.innerHTML=`<div class="result-ttl">Resultados (${found.length})</div>`+
+    found.map(u=>`<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      <strong style="color:var(--text);font-size:0.88rem">${u.name} ${u.last}</strong>
+      <span class="badge ${TYPE_BADGE[u.type]||'badge-gold'}" style="margin-left:8px">${u.type}</span>
+      <div style="font-size:0.78rem;color:var(--text3);margin-top:3px">${u.email}</div>
+      <div style="font-size:0.78rem;color:var(--gold);margin-top:3px">${u.loans.length?'Préstamos: '+u.loans.join(' · '):'Sin préstamos activos'}</div>
+    </div>`).join('');
+}
+function quickViewUser(id){
+  const u=USERS.find(x=>x.id===id);
+  document.getElementById('us-name').value=u.name;
+  searchUser();
+}
+function regUser(){
+  const n=document.getElementById('nu-name').value.trim();
+  const l=document.getElementById('nu-last').value.trim();
+  const e=document.getElementById('nu-email').value.trim();
+  const t=document.getElementById('nu-type').value;
+  const notif=document.getElementById('nu-notif');
+  if(!n||!l||!e){notif.className='alert alert-err on';notif.textContent='Completa todos los campos.';return;}
+  USERS.push({id:USERS.length+1,name:n,last:l,email:e,type:t,loans:[]});
+  notif.className='alert alert-ok on';notif.textContent=`✓ ${n} ${l} registrado como ${t}.`;
+  document.getElementById('nu-name').value='';document.getElementById('nu-last').value='';document.getElementById('nu-email').value='';
+  renderUsers();
+}
+
+// PRESTAMOS
+function renderLoans(){
+  document.getElementById('ln-tbody').innerHTML=LOANS.map((l,i)=>`
+    <tr>
+      <td>${l.user}</td>
+      <td style="color:var(--text)">${l.book}</td>
+      <td>${l.d0}</td>
+      <td>${l.d1}</td>
+      <td><span class="badge ${l.st==='Activo'?'badge-green':'badge-red'}">${l.st}</span></td>
+      <td><button class="btn-ghost btn-xs" onclick="retLoan(${i})">Devolver</button></td>
+    </tr>`).join('');
+}
+function retLoan(i){LOANS.splice(i,1);renderLoans();}
+function checkBook(){
+  const t=document.getElementById('bk-title').value.trim().toLowerCase();
+  const box=document.getElementById('bk-result');box.classList.add('on');
+  if(!t){box.innerHTML='<div class="alert alert-err on">Escribe un título.</div>';return;}
+  const bk=BOOKS.find(b=>b.title.toLowerCase().includes(t));
+  if(!bk){box.innerHTML=`<div class="result-ttl">Resultado</div><div class="alert alert-inf on">El libro no existe en el catálogo.</div>`;return;}
+  const ln=LOANS.find(l=>l.book.toLowerCase().includes(t));
+  box.innerHTML=`<div class="result-ttl">${bk.title}</div>
+    <p style="font-size:0.8rem;color:var(--text3);margin-bottom:10px">${bk.author} · ${bk.cat}</p>
+    ${bk.status==='available'
+      ?'<div class="alert alert-ok on">✓ Disponible — puede prestarse ahora.</div>'
+      :`<div class="alert alert-err on">✗ No disponible — ${ln?'Prestado a: '+ln.user+' · Devolución: '+ln.d1:'Reservado.'}</div>`}`;
+}
+function regLoan(){
+  const u=document.getElementById('ln-user').value.trim();
+  const b=document.getElementById('ln-book').value.trim();
+  const d=document.getElementById('ln-date').value;
+  const r=document.getElementById('ln-ret').value;
+  const notif=document.getElementById('ln-notif');
+  if(!u||!b||!d||!r){notif.className='alert alert-err on';notif.textContent='Completa todos los campos.';return;}
+  const found=BOOKS.find(x=>x.title.toLowerCase().includes(b.toLowerCase()));
+  if(found&&found.status!=='available'){notif.className='alert alert-err on';notif.textContent='Este libro no está disponible.';return;}
+  LOANS.push({user:u,book:b,d0:d,d1:r,st:'Activo'});
+  if(found) found.status='borrowed';
+  notif.className='alert alert-ok on';notif.textContent=`✓ Préstamo registrado para ${u}.`;
+  renderLoans();
+}
+
+// DBPEDIA BUSCADOR
+function updateSparql(){
+  const term=(document.getElementById('dp-term').value.trim().replace(/ /g,'_'))||'Recurso';
+  const lang=document.getElementById('dp-lang').value;
+  const type=document.getElementById('dp-type').value;
+  const base=lang==='en'?'dbpedia.org':`${lang}.dbpedia.org`;
+  let q='';
+  if(type==='obras'){
+    q=`PREFIX dbo: &lt;http://dbpedia.org/ontology/&gt;\nPREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;\n\nSELECT DISTINCT ?obraNombre\nWHERE {\n  ?obra dbo:author\n    &lt;http://${base}/resource/${term}&gt; .\n  ?obra rdfs:label ?obraNombre .\n} LIMIT 15`;
+  } else {
+    q=`PREFIX dbo: &lt;http://dbpedia.org/ontology/&gt;\n\nSELECT ?descripcion\nWHERE {\n  &lt;http://${base}/resource/${term}&gt;\n    dbo:abstract ?descripcion .\n}`;
+  }
+  document.getElementById('sp-preview').innerHTML=q;
+}
+document.getElementById('dp-term').addEventListener('input',updateSparql);
+document.getElementById('dp-lang').addEventListener('change',updateSparql);
+document.getElementById('dp-type').addEventListener('change',updateSparql);
+updateSparql();
+
+function quickDP(term,lang,type){
+  document.getElementById('dp-term').value=term;
+  document.getElementById('dp-lang').value=lang;
+  document.getElementById('dp-type').value=type;
+  updateSparql();queryDBpedia();
+}
+
+let _lastObrasHTML = null;
+let _lastObrasAutor = '';
+let _lastObrasLang  = '';
+
+function renderObras(items, autorTerm, lang, base){
+  const result = document.getElementById('dp-result');
+  _lastObrasHTML  = null; 
+  _lastObrasAutor = autorTerm;
+  _lastObrasLang  = lang;
+  _lastObrasItems = items; 
+  result.classList.add('on');
+  result.innerHTML = buildObrasHTML(items, autorTerm, lang, base);
+}
+
+function buildObrasHTML(items, autorTerm, lang, base){
+  return `<div class="result-ttl">Obras — ${autorTerm.replace(/_/g,' ')}</div>
+    <p style="font-size:0.76rem;color:var(--text3);margin-bottom:10px">${items.length} obras · ${base} · <span style="color:var(--gold2)">Haz clic en una obra para ver su sinopsis</span></p>
+    <ul class="dot-list">${items.map(o=>`<li style="cursor:pointer;transition:all 0.15s;border-radius:6px;padding:8px 6px;margin:1px 0"
+      onmouseover="this.style.background='rgba(212,168,67,0.08)';this.style.paddingLeft='12px'"
+      onmouseout="this.style.background='';this.style.paddingLeft='6px'"
+      onclick="searchObraFromList('${o.replace(/'/g,"\\'").replace(/"/g,'&quot;')}','${lang}')">
+      ${o}
+      <span style="margin-left:auto;font-size:0.7rem;color:var(--gold);opacity:0.7;flex-shrink:0">Sinopsis →</span>
+    </li>`).join('')}</ul>`;
+}
+
+let _lastObrasItems = [];
+
+function volverALista(){
+  const result = document.getElementById('dp-result');
+  const base = _lastObrasLang==='en'?'dbpedia.org':`${_lastObrasLang}.dbpedia.org`;
+  document.getElementById('dp-term').value = _lastObrasAutor;
+  document.getElementById('dp-lang').value = _lastObrasLang;
+  document.getElementById('dp-type').value = 'obras';
+  updateSparql();
+  result.classList.add('on');
+  result.innerHTML = buildObrasHTML(_lastObrasItems, _lastObrasAutor, _lastObrasLang, base);
+}
+//CONSULTA LOCAL
+async function queryDBpedia(){
+  const term=document.getElementById('dp-term').value.trim().replace(/ /g,'_');
+  const lang=document.getElementById('dp-lang').value;
+  const type=document.getElementById('dp-type').value;
+  const loader=document.getElementById('dp-loader');
+  const result=document.getElementById('dp-result');
+  if(!term){result.innerHTML='<div class="alert alert-err on">Escribe un término.</div>';result.classList.add('on');return;}
+  loader.classList.add('on');result.classList.remove('on');
+  const base=lang==='en'?'dbpedia.org':`${lang}.dbpedia.org`;
+  let sparql='';
+  if(type==='obras'){
+    sparql=`PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?obraNombre WHERE { ?obra dbo:author <http://${base}/resource/${term}> . ?obra rdfs:label ?obraNombre . } LIMIT 15`;
+  } else {
+    sparql=`PREFIX dbo: <http://dbpedia.org/ontology/> SELECT ?descripcion WHERE { <http://${base}/resource/${term}> dbo:abstract ?descripcion . }`;
+  }
+  const url=`https://${base}/sparql?query=${encodeURIComponent(sparql)}&format=json`;
+  try {
+    const res=await fetch(url,{headers:{'Accept':'application/sparql-results+json'}});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const bindings=data.results.bindings;
+    loader.classList.remove('on');result.classList.add('on');
+    if(!bindings.length){
+      result.innerHTML=`<div class="result-ttl">Sin resultados</div><div class="alert alert-inf on">No se encontró "<strong>${term}</strong>" en ${base}. Verifica mayúsculas y guiones bajos.</div>`;
+      return;
+    }
+    if(type==='obras'){
+      const items=[...new Set(bindings.map(b=>b.obraNombre?.value).filter(Boolean))];
+      renderObras(items, term, lang, base);
+    } else {
+      const descs=bindings.map(b=>b.descripcion?.value);
+      const text=descs.find(d=>d&&d.length>100)||descs[0]||'';
+      const btnVolver = _lastObrasItems.length
+        ? `<button onclick="volverALista()" style="display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;background:transparent;border:1px solid var(--border2);color:var(--text2);border-radius:6px;padding:6px 14px;font-size:0.78rem;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.15s"
+            onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'"
+            onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+            ← Volver a la lista de obras
+          </button>`
+        : '';
+      result.innerHTML=`${btnVolver}<div class="result-ttl">${term.replace(/_/g,' ')}</div>
+        <p style="font-size:0.76rem;color:var(--text3);margin-bottom:10px">${base}</p>
+        <p class="result-body">${text}</p>`;
+    }
+  } catch(e){
+    loader.classList.remove('on');result.classList.add('on');
+    result.innerHTML=`<div class="result-ttl">Error de conexión</div><div class="alert alert-err on">No se pudo conectar a ${base} desde el navegador (CORS). El backend Flask resuelve esto desde el servidor.</div>`;
+  }
+}
+
+function searchObraFromList(obraNombre, lang){
+  const uriTerm = obraNombre
+    .replace(/\s*\(.*?\)/g, '')
+    .trim()
+    .replace(/\s+/g, '_');
+
+  document.getElementById('dp-term').value = uriTerm;
+  document.getElementById('dp-lang').value = lang;
+  document.getElementById('dp-type').value = 'bio';
+  updateSparql();
+
+  const result = document.getElementById('dp-result');
+  result.classList.add('on');
+  result.innerHTML = `<div class="result-ttl" style="display:flex;align-items:center;gap:8px">
+    <div class="spin" style="flex-shrink:0"></div> Buscando sinopsis: ${obraNombre}
+  </div>`;
+
+  queryDBpedia();
+}
+
+// SEMANTICA
+function semUser(){
+  const name=document.getElementById('sm-user').value.trim();
+  const box=document.getElementById('sm-ur');box.classList.add('on');
+  if(!name){box.innerHTML='<div class="alert alert-err on">Escribe un nombre.</div>';return;}
+  const u=USERS.find(x=>(x.name+' '+x.last).toLowerCase().includes(name.toLowerCase()));
+  if(!u){box.innerHTML=`<div class="result-ttl">Resultado</div><div class="alert alert-err on">No se encontraron préstamos para "${name}".</div>`;return;}
+  const sparql=`PREFIX ont: &lt;http://www.biblioteca.com/ontologia#&gt;\nSELECT ?tituloLibro ?tipoUsuario\nWHERE {\n  ?usuario ont:nombre "${u.name}" .\n  FILTER(?tipoUsuario IN ("${u.type}"))\n  ?usuario ont:realizaPrestamo ?prestamo .\n  ?prestamo ont:incluyeRecurso ?libro .\n  ?libro ont:tieneTitulo ?tituloLibro .\n}`;
+  box.innerHTML=`<div class="result-ttl">${u.name} ${u.last}</div>
+    <span class="badge ${TYPE_BADGE[u.type]||'badge-gold'}">${u.type}</span>
+    <div style="margin-top:12px">
+      ${u.loans.length?`<ul class="dot-list">${u.loans.map(l=>`<li>${l}</li>`).join('')}</ul>`:'<div class="alert alert-inf on">Sin préstamos activos.</div>'}
+    </div>
+    <details style="margin-top:12px;cursor:pointer">
+      <summary style="font-size:0.72rem;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase">Ver SPARQL generado</summary>
+      <div class="sparql-block" style="margin-top:8px">${sparql}</div>
+    </details>`;
+}
+function semBook(){
+  const title=document.getElementById('sm-book').value.trim();
+  const box=document.getElementById('sm-br');box.classList.add('on');
+  if(!title){box.innerHTML='<div class="alert alert-err on">Escribe un título.</div>';return;}
+  const bk=BOOKS.find(b=>b.title.toLowerCase().includes(title.toLowerCase()));
+  const ln=LOANS.find(l=>l.book.toLowerCase().includes(title.toLowerCase()));
+  if(!bk){box.innerHTML=`<div class="result-ttl">Resultado</div><div class="alert alert-inf on">El libro no existe en el catálogo.</div>`;return;}
+  const sparql=`PREFIX ont: &lt;http://www.biblioteca.com/ontologia#&gt;\nSELECT ?nombreUsuario ?tipoUsuario\nWHERE {\n  ?libro ont:tieneTitulo ?titulo .\n  FILTER(regex(str(?titulo), "${title}", "i"))\n  ?prestamo ont:incluyeRecurso ?libro .\n  ?usuario ont:realizaPrestamo ?prestamo .\n  ?usuario ont:nombre ?nombreUsuario .\n}`;
+  box.innerHTML=`<div class="result-ttl">${bk.title}</div>
+    <p style="font-size:0.78rem;color:var(--text3);margin-bottom:10px">${bk.author} · ${bk.cat}</p>
+    ${bk.status==='available'
+      ?'<div class="alert alert-ok on">✓ Disponible — puede prestarse ahora.</div>'
+      :`<div class="alert alert-err on">✗ No disponible — ${ln?'Prestado a: <strong>'+ln.user+'</strong> · Tipo: '+getType(ln.user)+' · Devolución: '+ln.d1:'Reservado.'}</div>`}
+    <details style="margin-top:12px;cursor:pointer">
+      <summary style="font-size:0.72rem;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase">Ver SPARQL generado</summary>
+      <div class="sparql-block" style="margin-top:8px">${sparql}</div>
+    </details>`;
+}
+function getType(fn){const u=USERS.find(x=>(x.name+' '+x.last)===fn);return u?u.type:'Usuario';}
+
+// RESERVA
+let curBook='';
+function reserveBook(title,status){
+  if(status!=='available') return;
+  curBook=title;
+  document.getElementById('res-ttl').textContent='📚 '+title;
+  document.getElementById('res-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('res-overlay').classList.add('on');
+}
+function closeModal(){document.getElementById('res-overlay').classList.remove('on');document.getElementById('res-notif').className='alert';}
+function confirmRes(){
+  const u=document.getElementById('res-user').value.trim();
+  const d=document.getElementById('res-date').value;
+  const notif=document.getElementById('res-notif');
+  if(!u){notif.className='alert alert-err on';notif.textContent='Escribe tu nombre.';return;}
+  const bk=BOOKS.find(b=>b.title===curBook);
+  if(bk) bk.status='reserved';
+  notif.className='alert alert-ok on';notif.textContent=`✓ Reservado para ${u} — ${d}.`;
+  setTimeout(()=>{closeModal();renderBooks(BOOKS);},1500);
+}
+
+// Agregar libro
+function openAddBook(){document.getElementById('ab-overlay').classList.add('on');}
+function closeModal2(){document.getElementById('ab-overlay').classList.remove('on');document.getElementById('ab-notif').className='alert';}
+function addBook(){
+  const t=document.getElementById('ab-title').value.trim();
+  const a=document.getElementById('ab-author').value.trim();
+  const c=document.getElementById('ab-cat').value;
+  const y=parseInt(document.getElementById('ab-year').value)||2024;
+  const notif=document.getElementById('ab-notif');
+  if(!t||!a){notif.className='alert alert-err on';notif.textContent='Escribe título y autor.';return;}
+  BOOKS.push({id:BOOKS.length+1,title:t,author:a,cat:c,status:'available',year:y});
+  notif.className='alert alert-ok on';notif.textContent=`✓ "${t}" agregado al catálogo.`;
+  setTimeout(()=>{closeModal2();renderBooks(BOOKS);},1400);
+}
+
+// para mostrar catalogo
+renderBooks(BOOKS);renderUsers();renderLoans();
+const td=new Date().toISOString().split('T')[0];
+document.getElementById('ln-date').value=td;
+const r=new Date();r.setDate(r.getDate()+30);
+document.getElementById('ln-ret').value=r.toISOString().split('T')[0];
+function deleteBook(id) {
+  const bk = BOOKS.find(b => b.id === id);
+  if (!bk) return;
+  
+  if (bk.status === 'reserved' || bk.status === 'borrowed') {
+    alert(` PROTECCIÓN DE INVENTARIO:\nNo puedes eliminar "${bk.title}" porque actualmente está ${bk.status === 'reserved' ? 'reservado' : 'prestado'}.`);
+    return;
+  }
+  
+  if (confirm(`¿Estás seguro de eliminar el libro "${bk.title}"?`)) {
+    BOOKS = BOOKS.filter(b => b.id !== id);
+    renderBooks(BOOKS); 
+    alert(`✓ Libro eliminado.`);
+  }
+}
+
+function deleteUser(email) {
+  const u = USERS.find(x => x.email === email);
+  if (!u) return;
+
+  const prestamosActivos = LOANS ? LOANS.filter(l => l.user === u.name && l.status !== 'returned') : [];
+  
+  if (prestamosActivos.length > 0) {
+    alert(` PROTECCIÓN DE DATOS:\nNo puedes eliminar a ${u.name} porque tiene ${prestamosActivos.length} préstamo(s) activo(s).`);
+    return;
+  }
+
+  if (confirm(`¿Estás seguro de eliminar al usuario ${u.name}?`)) {
+    USERS = USERS.filter(x => x.email !== email);
+    if (typeof renderUsers === "function") renderUsers(); 
+    alert(`✓ Usuario eliminado.`);
+  }
+}
+</script>
+</body>
+</html>
